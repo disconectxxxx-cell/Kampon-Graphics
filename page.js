@@ -1,18 +1,16 @@
+// app/page.js
 "use client";
 import React, { useState } from 'react';
 
-export default function BookingPage() {
+export default function KamponGraphicsMinimal() {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
-    service: 'standard',
     date: '',
-    time: ''
+    time: '',
+    details: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // คำนวณค่ามัดจำตามบริการที่เลือก
-  const depositAmount = formData.service === 'premium' ? 500 : 300;
+  const [status, setStatus] = useState('idle');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -20,116 +18,141 @@ export default function BookingPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // TODO: เชื่อมต่อระบบบันทึกข้อมูลและลิ้งก์จ่ายเงินตรงนี้
-    setTimeout(() => {
-      alert(`บันทึกข้อมูลสำเร็จ! กรุณาโอนเงินมัดจำจำนวน ${depositAmount} บาท`);
-      setIsSubmitting(false);
-    }, 1500);
+    setStatus('loading');
+    try {
+      const response = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (response.ok) {
+        setStatus('success');
+      } else {
+        setStatus('error');
+      }
+    } catch (error) {
+      setStatus('error');
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-          จองคิวนัดหมายออนไลน์
-        </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
-          กรุณากรอกข้อมูลเพื่อล็อควันและเวลาของคุณ
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#FDFDFD] text-[#2C2C2C] font-sans antialiased py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        
+        {/* Header ร้าน สไตล์มินิมอล */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-light tracking-wide text-slate-900 mb-3 font-serif">
+            Kampon Graphics
+          </h1>
+          <p className="text-sm tracking-widest text-slate-400 uppercase">
+            ระบบจองคิวและรับมัดจำออนไลน์
+          </p>
+          <div className="w-12 h-[1px] bg-slate-300 mx-auto mt-6"></div>
+        </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl border border-slate-100 rounded-2xl sm:px-10">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            
-            {/* ชื่อ-นามสกุล */}
+        {/* ส่วนเนื้อหาหลัก */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+          
+          {/* ซีกซ้าย: ข้อมูลการโอนเงิน (คลีนๆ) */}
+          <div className="space-y-8 p-2">
             <div>
-              <label className="block text-sm font-medium text-slate-700">ชื่อ - นามสกุล</label>
-              <input
-                type="text"
-                name="name"
-                required
-                className="mt-1 block w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
-                placeholder="สมชาย ใจดี"
-                value={formData.name}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* เบอร์โทรศัพท์ */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700">เบอร์โทรศัพท์</label>
-              <input
-                type="tel"
-                name="phone"
-                required
-                className="mt-1 block w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
-                placeholder="089-XXX-XXXX"
-                value={formData.phone}
-                onChange={handleChange}
-              />
-            </div>
-
-            {/* เลือกบริการ */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700">บริการที่ต้องการ</label>
-              <select
-                name="service"
-                className="mt-1 block w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all bg-white"
-                value={formData.service}
-                onChange={handleChange}
-              >
-                <option value="standard">บริการทั่วไป (มัดจำ 300 บาท)</option>
-                <option value="premium">บริการพิเศษ/VIP (มัดจำ 500 บาท)</option>
-              </select>
-            </div>
-
-            {/* วันและเวลา */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700">เลือกวัน</label>
-                <input
-                  type="date"
-                  name="date"
-                  required
-                  className="mt-1 block w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
-                  value={formData.date}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700">เลือกเวลา</label>
-                <input
-                  type="time"
-                  name="time"
-                  required
-                  className="mt-1 block w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-all"
-                  value={formData.time}
-                  onChange={handleChange}
-                />
+              <h2 className="text-lg font-medium text-slate-800 mb-4">ข้อมูลการวางมัดจำ</h2>
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 space-y-4">
+                <div className="flex justify-between items-baseline">
+                  <span className="text-sm text-slate-500">ค่ามัดจำว่าจ้างงานถ่ายภาพ</span>
+                  <span className="text-2xl font-semibold text-slate-900">฿300</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  กรุณาโอนเงินมัดจำเพื่อล็อคสิทธิ์คิวงานในปฏิทิน จากนั้นกรอกข้อมูลด้านขวาเพื่อยืนยันคิวครับ
+                </p>
               </div>
             </div>
 
-            {/* ยอดมัดจำสรุป */}
-            <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-100 flex justify-between items-center">
-              <span className="text-sm font-medium text-indigo-900">ยอดเงินมัดจำที่ต้องชำระ:</span>
-              <span className="text-xl font-bold text-indigo-600">{depositAmount} บาท</span>
+            <div className="space-y-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">บัญชีธนาคาร</h3>
+              <div className="border-l-2 border-slate-200 pl-4 space-y-1 text-sm text-slate-600">
+                <p className="font-medium text-slate-800">ธนาคารกสิกรไทย</p>
+                <p className="font-mono text-base tracking-wider text-slate-900 my-1">012-3-45678-9</p>
+                <p className="text-xs text-slate-400">ชื่อบัญชี: นายกำพล (Kampon Graphics)</p>
+              </div>
             </div>
+          </div>
 
-            {/* ปุ่มกดยืนยัน */}
-            <div>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all disabled:bg-slate-400"
-              >
-                {isSubmitting ? 'กำลังบันทึกข้อมูล...' : 'ยืนยันการจองและไปที่หน้าชำระเงิน'}
-              </button>
-            </div>
+          {/* ซีกขวา: ฟอร์มกรอกข้อมูลผู้จอง */}
+          <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm">
+            {status === 'success' ? (
+              <div className="text-center py-16 space-y-4">
+                <div className="w-12 h-12 bg-slate-50 text-slate-800 rounded-full flex items-center justify-center mx-auto border border-slate-200 text-xl">✓</div>
+                <h3 className="text-xl font-medium text-slate-900">บันทึกคิวสำเร็จ</h3>
+                <p className="text-slate-400 text-xs max-w-xs mx-auto leading-relaxed">
+                  ระบบได้ทำการเชื่อมต่อและลงบันทึกวันนัดหมายใน Google Calendar ของร้านเรียบร้อยแล้ว
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <h2 className="text-lg font-medium text-slate-800 mb-2">ข้อมูลผู้จองคิว</h2>
 
-          </form>
+                <div>
+                  <label className="block text-xs text-slate-400 mb-2">ชื่อ - นามสกุล</label>
+                  <input
+                    type="text" name="name" required placeholder="กรอกชื่อของคุณ"
+                    className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-1 focus:ring-slate-400 focus:border-slate-400 transition-all outline-none"
+                    value={formData.name} onChange={handleChange}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slate-400 mb-2">เบอร์โทรศัพท์</label>
+                  <input
+                    type="tel" name="phone" required placeholder="089-XXX-XXXX"
+                    className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-1 focus:ring-slate-400 focus:border-slate-400 transition-all outline-none"
+                    value={formData.phone} onChange={handleChange}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-2">เลือกวันนัดหมาย</label>
+                    <input
+                      type="date" name="date" required
+                      className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-1 focus:ring-slate-400 focus:border-slate-400 transition-all outline-none text-slate-600"
+                      value={formData.date} onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-slate-400 mb-2">เวลา</label>
+                    <input
+                      type="time" name="time" required
+                      className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-1 focus:ring-slate-400 focus:border-slate-400 transition-all outline-none text-slate-600"
+                      value={formData.time} onChange={handleChange}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs text-slate-400 mb-2">รายละเอียดงานเพิ่มเติม</label>
+                  <textarea
+                    name="details" rows="3" placeholder="ระบุสถานที่ หรือธีมงานที่ต้องการถ่ายภาพ..."
+                    className="w-full px-4 py-3 bg-slate-50/50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-1 focus:ring-slate-400 focus:border-slate-400 transition-all outline-none resize-none"
+                    value={formData.details} onChange={handleChange}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="w-full py-4 bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm rounded-xl tracking-wider shadow-sm transition-all transform active:scale-[0.99] disabled:bg-slate-200 disabled:text-slate-400"
+                >
+                  {status === 'loading' ? 'กำลังบันทึกคิว...' : 'ยืนยันการจองและลงปฏิทิน'}
+                </button>
+
+                <p className="text-[11px] text-center text-slate-400 leading-relaxed">
+                  * คิวงานจะลงปฏิทิน Google Calendar อัตโนมัติทันทีหลังกดยืนยัน
+                </p>
+              </form>
+            )}
+          </div>
+
         </div>
       </div>
     </div>
