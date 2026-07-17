@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kampon Graphics - ระบบจองคิวออนไลน์</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        body {
+            background-color: #fdfdfd;
+            color: #2c2c2c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            border: 1px solid #eaeaea;
+        }
+        h1 {
+            font-size: 28px;
+            font-weight: 300;
+            letter-spacing: -0.5px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 6px;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #999;
+            background-color: #ffffff;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #111111;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #333333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kampon Graphics</h1>
+    <div class="subtitle">ระบบจองคิวรับบริการออนไลน์</div>
+    
+    <form id="bookingForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+            <label>ชื่อ - นามสกุล</label>
+            <input type="text" id="name" required placeholder="กรุณากรอกชื่อของคุณ">
+        </div>
+        
+        <div class="form-group">
+            <label>เบอร์โทรศัพท์</label>
+            <input type="tel" id="phone" required placeholder="08X-XXX-XXXX">
+        </div>
+        
+        <div class="form-group">
+            <label>บริการที่ต้องการ</label>
+            <select id="service">
+                <option value="300">บริการออกแบบทั่วไป (มัดจำ 300 บาท)</option>
+                <option value="500">บริการออกแบบพรีเมียม (มัดจำ 500 บาท)</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>วันที่ต้องการจองคิว</label>
+            <input type="date" id="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label>เวลา</label>
+            <input type="time" id="time" required>
+        </div>
+        
+        <div class="form-group">
+            <label>รายละเอียดเพิ่มเติม (ถ้ามี)</label>
+            <textarea id="details" rows="3" placeholder="ระบุรายละเอียดงานที่ต้องการเพิ่มเติ่ม..."></textarea>
+        </div>
+        
+        <button type="submit">ยืนยันการจองคิว</button>
+    </form>
+</div>
+
+<script>
+    function handleSubmit(e) {
+        e.preventDefault();
+        const deposit = document.getElementById('service').value;
+        
+        Swal.fire({
+            title: 'บันทึกข้อมูลสำเร็จ!',
+            text: `กรุณาโอนเงินมัดจำจำนวน ${deposit} บาท เพื่อยืนยันคิว`,
+            icon: 'success',
+            confirmButtonColor: '#111111',
+            confirmButtonText: 'ตกลง'
+        });
+    }
+</script>
+
+</body>
+</html>
